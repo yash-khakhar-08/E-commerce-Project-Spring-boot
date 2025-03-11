@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: http://marketmatrix.eu-north-1.elasticbeanstalk.com/sitemap.xml

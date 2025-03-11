@@ -1,0 +1,132 @@
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="base::layout(~{::body}, ~{::style} )" >
+    <head>
+        <title>Home</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <style>
+        /* product design start */
+
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        
+        .product-card:hover {
+            transform: scale(1.05);
+        }
+
+        .product-img {
+            height: 350px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .product-info {
+            padding: 15px;
+        }
+        
+        .btn-toggle {
+            background-color: #007bff;
+            color: white;
+            width: 100%;
+            text-align: center;
+        }
+
+        /*  product design ends */
+
+    </style>
+    <body>
+        <div class="container-fluid mt-4 p-4" th:each="category : ${categories}">
+            <h2 th:id="${category.catName}" class="mb-4" th:if="${category.product != null and #lists.size(category.product) > 0 }"> Category: [[${category.catName}]] - [[${category.sectionName}]]  </h2>
+            <div class="row">
+                <!-- Product Card 1 -->
+                <div class="col-md-3 col-sm-6 col-12 mb-4" th:each="product : ${category.product}">
+                    <div class="product-card">
+                        <a th:href="@{/user/view-product(id=${product.id})}">
+                        <img th:src="${product.productImage}" alt="Product Image" class="product-img">
+                        </a>
+                        <div class="product-info">
+                            <h5>[[${product.productName}]]</h5>
+                            <p class="text-muted">Price: <strong>[[${product.productPrice}]] rs.</strong></p>
+        
+                            <!-- Collapsible More Info -->
+                            <button class="btn btn-primary w-100" type="button" 
+                                data-toggle="collapse" 
+                                th:attr="data-target='#product_' + ${product.id}, aria-controls='product_' + ${product.id}" 
+                                aria-expanded="false">
+                                More Info
+                            </button>
+
+                            <div class="collapse mt-2" th:id="'product_' + ${product.id}">
+                                <p><strong>Category:</strong> [[${category.catName}]]</p>
+                                <p th:if="${product.productQty > 0}" th:id="'stock_'+${product.id}"><strong>Stock:</strong> [[${product.productQty}]] left</p>
+                                <p th:unless="${product.productQty > 0}"><strong>Stock:</strong> Out of stock</p>
+                                <p th:if="${product.productQty > 0}"><strong>Quantiy:</strong> 
+                                    <input type="number" th:id="'qty_'+${product.id}" value="1" min="1" th:attr="max=${product.productQty > 3 ? 3 : product.productQty}" />
+                                </p>
+                                <button class="btn btn-primary w-100 add-to-cart" th:id="${product.id}" th:data-id="${product.id}" th:if="${product.productQty > 0 and not #lists.contains(productIds,product.id) }">
+                                    Add to Cart
+                                </button>
+                                <button class="btn btn-primary w-100"  th:if="${#lists.contains(productIds,product.id) }"  onClick="goToCart()" >
+                                    Go to Cart
+                                </button>
+                            </div>
+                        </div>
+        
+                    </div>
+        
+                </div>
+        
+            </div>
+        </div>
+        
+
+         <!-- product design ends -->
+         
+       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+
+       <script>
+           $(document).ready(function () {
+                $(".add-to-cart").click(function () {
+                    let productId = $(this).attr("data-id");
+                    let qty = document.getElementById("qty_"+productId).value;
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/user/add-cart-process",
+                        data: {
+                            p_id: productId,
+                            qty: qty
+                        },
+                        success: function (response) {
+                            alert(response);
+                            
+                            var button = document.getElementById(productId);
+                            if(button){
+                                button.innerText = "Added to Cart";
+                                button.disabled = true;
+                            }
+                            
+                            var cartCountEle = document.getElementById("cart-count");
+                            var currentCount = parseInt(cartCountEle.textContent); 
+                            cartCountEle.textContent = currentCount + 1; 
+                            
+                        },
+                        error: function () {
+                            alert("Error adding product to cart!");
+                        }
+                    });
+                });
+            });
+    </script>
+        
+    </body>
+    
+    
+    
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="base::layout(~{::body}, ~{::style}, ~{::title} )">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MarketMatrix-Orders</title>
+    
+    <style>
+        body {
+            background-color: #f5f5f5; /* Light grey Amazon-like background */
+        }
+        .order-container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        @media (max-width: 768px) {
+            .order-container {
+                max-width: 100%; /* Takes full width on smaller screens */
+                padding: 0; /* Removes any side padding */
+            }
+        }
+        .cart-item {
+            background: white;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            display: flex;
+        }
+        .cart-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .cart-item .details {
+            flex: 1;
+            padding-left: 15px;
+        }
+        .cart-item .details h5 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        .cart-item .details .price {
+            font-weight: bold;
+            color: #B12704; /* Amazon-like red price */
+        }
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+        }
+        .quantity-controls button {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 18px;
+            border: 1px solid #ccc;
+            background: white;
+        }
+        .quantity-controls input {
+            width: 40px;
+            text-align: center;
+            border: none;
+            font-weight: bold;
+            background: transparent;
+        }
+        .remove-btn {
+            color: #ff5050;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        
+    </style>
+</head>
+<body>
+
+<div class="container mt-5 order-container" th:if="${#lists.size(orders) > 0}">
+    <h2 class="text-center mb-4">🛒 Order History</h2>
+
+    <!-- Cart Items -->
+    <div id="cartItems">
+
+        <!-- Sample Product Item -->
+        <div class="cart-item d-flex align-items-center" th:each="order : ${orders}">
+            <a th:href="@{view-product(id=${order.product.id})}">
+                <img th:src="${order.product.productImage}" alt="Product">
+            </a>
+            <div class="details">
+                <h5>[[${order.product.productName}]]</h5>
+                <p class="price">Subtotal: [[${order.purchaseAmt}]]</p>
+                <div class="order-info mt-2">
+                    <p class="mb-1"><strong>Date of Order:</strong> <span>[[${#dates.format(order.date, 'yyyy-MM-dd hh:mm a')}]]</span></p>
+                    <p class="mb-1"><strong>Quantity:</strong> <span>[[${order.purchaseQty}]]</span></p>
+                    <p class="mb-1"><strong>Payment Mode:</strong> <span>[[${order.paymentMode}]]</span></p>
+                    <p class="mb-1"><strong>Status:</strong> <span class="text-success">[[${order.status}]]</span></p>
+                </div>
+                <button class="btn btn-danger btn-sm mt-3 cancel-order" th:if="${order.status == 'Pending'}" th:data-id="${order.id}">Cancel Order</button>
+            </div>
+        </div>
+        <!-- Sample Product Item Ends -->
+    </div>
+    <br><br><br>
+</div>
+    
+<div class="container mt-5" th:unless="${#lists.size(orders) > 0}">
+        <h2 class="text-center mb-4">🛒 Order History</h2>
+        <h2 class="text-center mb-4">No Orders | Go to <a href="home">Home</a></h2>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+<script>
+
+        // Save scroll position before reload
+        window.onbeforeunload = function () {
+            localStorage.setItem("scrollPosition", window.scrollY);
+        };
+
+        // Restore scroll position after reload
+        window.onload = function () {
+            let scrollPosition = localStorage.getItem("scrollPosition");
+            if (scrollPosition) {
+                window.scrollTo(0, scrollPosition);
+            }
+        };
+    
+            $(document).ready(function () {
+                $(".cancel-order").click(function () {
+                    let button = $(this); // Get the clicked button
+                    let orderId = $(this).attr("data-id");
+                    $.ajax({
+                        type: "POST",
+                        url: "cancel-order",
+                        data: {
+                            orderId: orderId
+                        },
+                        success: function (response) {
+                            alert(response);
+                            window.location.reload();
+                            
+                        },
+                        error: function (xhr) {
+                            alert(xhr.responseText);
+                        }
+                    });
+                });
+            });
+    
+</script>
+
+</body>
+</html>

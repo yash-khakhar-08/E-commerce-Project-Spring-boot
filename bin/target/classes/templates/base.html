@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content,style)" >
+    <head>
+        <title>Base</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+             <!-- Bootstrap Icons -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <style>
+            .cart-container {
+                position: relative;
+                display: inline-block;
+            }
+            .cart-badge {
+                position: absolute;
+                top: 0;
+                right: 0;
+                transform: translate(50%, -50%);
+                font-size: 0.8rem;
+            }
+
+            .search-button{
+                    border: 0.5px solid white !important; 
+                    font-weight: bold; 
+            }
+            
+            .carousel-inner img {
+                height: 500px;
+                width: 100%; /* Ensure full width */
+                object-fit: cover; /* Maintain aspect ratio without distortion */
+            }
+            
+            body {
+            padding-top: 70px; /* Prevent content from being hidden behind navbar */
+            }
+            
+            .content {
+                height: 200vh; /* Tall content to enable scrolling */
+                padding: 20px;
+            }
+
+
+        </style>
+        
+        <th:block th:insert="${style}"></th:block>
+        
+    </head>
+    <body>
+       
+        <!-- start navbar -->
+        
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+	    <a class="navbar-brand" href="#">MarketMatrix</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                  <a class="nav-link" href="home">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                  <a class="nav-link" href="men">Men</a>
+                </li>
+                <li class="nav-item active">
+                  <a class="nav-link" href="women">Women</a>
+                </li>
+                
+                <li class="nav-item dropdown active" th:if="${categories != null}">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Categories</a>
+                    <div class="dropdown-menu">
+                        <div th:each="category : ${categories}">
+                            <a class="dropdown-item" th:href="'#'+${category.catName}" th:text="${category.catName}"></a>
+                        </div>
+                    </div>
+                </li>
+
+                
+              </ul>
+		<div class="w-50 align-items-center mr-auto">                
+
+                    <form class="form-inline my-2 my-lg-0" action="search-product" method="get">
+                      <input class="form-control mr-sm-2 w-75" type="search" name="search-query" placeholder="Search" aria-label="Search" id="searchQuery">
+                      <button class="btn btn-primary my-2 my-sm-0 p-1 search-button" type="submit" id="searchBtn" disabled>Search</button>
+                    </form>
+
+		</div>
+
+            <div class="d-flex align-items-center" style="margin-left:30px;">
+                <button class="btn btn-primary position-relative d-flex align-items-center" onClick="goToCart()">
+                    <span class="me-3">
+                    <i class="bi bi-cart text-white"></i>
+                    <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        <th:block th:if="${productIds != null}">
+                            [[${#lists.size(productIds)}]]
+                        </th:block>
+
+                    </span>
+                    </span>
+                </button>
+
+               <span class="text-white fw-bold" style="margin-left:40px;">Welcome, [[${username}]]</span>
+
+            </div>
+
+            </div>
+          </nav>
+        
+        
+        <!-- end navbar -->
+        
+        <!-- slider starts -->
+
+        <div class="container-fluid mt-2" th:if="${pageName == 'home'}">
+
+            <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                <!-- Indicators -->
+                <ol class="carousel-indicators">
+                    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#myCarousel" data-slide-to="1"></li>
+                    <li data-target="#myCarousel" data-slide-to="2"></li>
+                </ol>
+
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img th:src="@{/banners/banner-1.gif}" class="d-block w-100" alt="Image 1">
+                    </div>
+                    <div class="carousel-item">
+                        <img th:src="@{/banners/banner-2.jpg}" class="d-block w-100" alt="Image 2">
+                    </div>
+                    <div class="carousel-item">
+                        <img th:src="@{/banners/banner-3.jpg}" class="d-block w-100" alt="Image 3">
+                    </div>
+                </div>
+
+                <!-- Left and right controls -->
+                <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>	<!-- slider ends -->
+
+        
+         <div th:replace="${content}"></div>
+         
+         
+         <!-- footer starts -->
+         
+            <footer class="bg-dark text-light pt-4">
+            <div class="container">
+                <div class="row">
+                    <!-- About Us -->
+                    <div class="col-md-3">
+                        <h5>About Us</h5>
+                        <p class="small">We are committed to providing the best products with quality service.</p>
+                    </div>
+
+                    <!-- Quick Links -->
+                    <div class="col-md-3">
+                        <h5>Quick Links</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="home" class="text-light">Home</a></li>
+                            <li><a href="orders" class="text-light">Orders</a></li>
+                            <li><a href="" class="text-light">Contact Us</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Customer Support -->
+                    <div class="col-md-3">
+                        <h5>Customer Support</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="" class="text-light">FAQs</a></li>
+                            <li><a href="" class="text-light">Return Policy</a></li>
+                            <li><a href="" class="text-light">Shipping Info</a></li>
+                            <li><a href="" class="text-light">Track Order</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Contact Info -->
+                    <div class="col-md-3">
+                        <h5>Contact Us</h5>
+                        <p class="small">
+                            📍 123 Main Street, Rajkot, India <br>
+                            📞 +123 456 7890 <br>
+                            ✉️ support@example.com
+                        </p>
+                        <div>
+                            <a href="#" class="text-light mr-2"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="text-light mr-2"><i class="bi bi-twitter"></i></a>
+                            <a href="#" class="text-light mr-2"><i class="bi bi-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Copyright -->
+                <hr class="bg-light">
+                <div class="text-center pb-3">
+                    <p class="small mb-0">&copy; 2025 MarketMatrix. All Rights Reserved.</p>
+                </div>
+            </div>
+        </footer>
+         
+         <!-- footer ends -->
+         
+         
+         <script>
+             function goToCart(){
+                 window.location.href = "cart";
+             }
+             
+             document.getElementById("searchQuery").addEventListener("input", function () {
+                // Enable the button only if input is not empty or just spaces
+                 document.getElementById("searchBtn").disabled = document.getElementById("searchQuery").value.trim() === "";
+            });
+
+         </script>
+        
+    </body>
+</html>

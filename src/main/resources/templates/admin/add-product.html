@@ -1,0 +1,151 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Admin Panel Dashboard - Event Requests</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-white shadow-md py-4">
+            <div class="container mx-auto flex justify-between items-center px-6">
+                <div class="text-2xl font-bold text-gray-800">Admin Dashboard</div>
+                <div class="flex items-center space-x-4 relative">
+                    
+                    <div class="relative">
+                        <button class="text-gray-600 hover:text-gray-800 focus:outline-none " id="user-menu-button">
+                            <i class="fas fa-user-circle"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-20 hidden" id="user-menu">
+                            <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Profile</a>
+                            <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Settings</a>
+                            <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Main Content -->
+        <div class="flex flex-1">
+            <!-- Sidebar -->
+            <aside class="bg-white w-64 min-h-screen shadow-md">
+                <nav class="mt-10">
+                    <a class="flex items-center py-2 px-6 text-gray-600 hover:bg-gray-200 hover:text-gray-800" href="home">
+                        <i class="fas fa-tachometer-alt mr-3"></i>
+                        Dashboard
+                    </a>
+                    <a class="flex items-center py-2 px-6 text-gray-600 hover:bg-gray-200 hover:text-gray-800" href="#">
+                        <i class="fas fa-calendar-alt mr-3"></i>
+                        Revenue
+                    </a>
+                    <a class="flex items-center py-2 px-6 text-gray-600 hover:bg-gray-200 hover:text-gray-800" href="#">
+                        <i class="fas fa-users mr-3"></i>
+                        Users
+                    </a>
+                    <a class="flex items-center py-2 px-6 text-gray-600 hover:bg-gray-200 hover:text-gray-800" href="#">
+                        <i class="fas fa-cogs mr-3"></i>
+                        Settings
+                    </a>
+                </nav>
+            </aside>
+            <!-- Main Section -->
+            <main class="flex-1 p-6">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold mb-6">Add Product</h2>
+                   
+                    <h3 class="text-2xl font-bold mb-6 text-blue-500" th:if="${success}" th:text="${success}"></h3>
+                    
+                    <form action="add-product-process" method="post" enctype="multipart/form-data">
+                        
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Select Category
+                            </label>
+                            <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="category">
+                                <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.catName} + ' - '+ ${category.sectionName}"> </option>
+                            </select>
+                        </div>
+                        
+                        
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Product Name
+                            </label>
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="productName"  placeholder="Product Name" type="text" required/>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Product Description
+                            </label>
+                            <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="productDesc" placeholder="Product Description" required></textarea>
+                            
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Product Price
+                            </label>
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="productPrice"  placeholder="Product Price" type="number" required/>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Product Quantity
+                            </label>
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="productQty"  placeholder="Product Quantity" type="number" required/>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Product Image
+                            </label>
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="image"  placeholder="Product Image" type="file" accept="image/*" required/>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                                Add
+                            </button>
+                            
+                            <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+                                Back
+                            </button>
+                        </div>
+                    </form>
+                    
+                     <img th:if="${image}" th:src="@{/products/{image}(image=${image})}" alt="Product Image" height="200" width="200">
+                    
+                    
+                </div>
+            </main>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const userMenuButton = document.getElementById("user-menu-button");
+            const userMenu = document.getElementById("user-menu");
+    
+            userMenuButton.addEventListener("click", function () {
+                userMenu.classList.toggle("hidden");
+            });
+    
+            // Close dropdown when clicking outside
+            document.addEventListener("click", function (event) {
+                if (!userMenuButton.contains(event.target) && !userMenu.contains(event.target)) {
+                    userMenu.classList.add("hidden");
+                }
+            });
+        });
+    </script>
+    
+</body>
+</html>

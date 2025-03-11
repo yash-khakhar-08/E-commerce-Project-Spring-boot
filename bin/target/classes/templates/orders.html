@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="base::layout(~{::body}, ~{::style} )">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Shopping Cart</title>
+    <style></style>
+</head>
+
+<body class="bg-light">
+
+    <div class="container-fluid mt-5" th:if="${#lists.size(orders) > 0}">
+        <h2 class="text-center mb-4">🛒 Order History</h2>
+
+        <div class="table-responsive">
+            <table class="table table-bordered text-center bg-white shadow-sm">
+                <thead class="bg-primary text-white">
+                    <tr>
+                        <th>Image</th>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                        <th>Payment Mode</th>
+                        <th>Date of order</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Sample Product Row -->
+                    <tr th:each="order : ${orders}">
+                        <td><a th:href="@{view-product(id=${order.product.id})}">
+                            <img th:src="${order.product.productImage}" 
+                                 class="img-fluid rounded" width="80" height="80" alt="Product"></a>
+                        </td>
+                        <td class="align-middle">[[${order.product.productName}]]</td>
+                        <td class="align-middle"  >[[${order.product.productPrice}]] rs</td>
+                        <td class="align-middle">
+                            <div class="d-flex justify-content-center align-items-center">
+                                
+                                <input type="text" class="form-control text-center mx-2 w-50" th:id="'qty_'+${order.id}" th:value="${order.purchaseQty}" readonly>
+                                
+                            </div>
+                        </td>
+                        <td class="align-middle" th:id="'purchase_amt_'+${order.id}">[[${order.purchaseAmt}]]</td>
+                        <td class="align-middle" th:id="'paymentmode_'+${order.id}">[[${order.paymentMode}]]</td>
+                        <td class="align-middle" >[[${#dates.format(order.date, 'yyyy-MM-dd hh:mm a')}]]</td>
+                        <td class="align-middle" th:id="'status_'+${order.id}">[[${order.status}]]</td>
+                        <td class="align-middle">
+                            <button class="btn btn-danger btn-sm cancel-order" th:if="${order.status == 'Pending'}" th:data-id="${order.id}" >🗑</button>
+                            <button class="btn btn-primary btn-sm" th:unless="${order.status == 'Pending'}" >[[${order.status}]]</button>
+                        </td>
+                    </tr>
+                    <!-- Sample Product Row Ends -->
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    
+   <br><br>
+    
+    
+    
+    <div class="container mt-5" th:unless="${#lists.size(orders) > 0}">
+        <h2 class="text-center mb-4">🛒 Order History</h2>
+        <h2 class="text-center mb-4">No Orders | Go to <a href="home">Home</a></h2>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+    <script>
+        
+        $(document).ready(function () {
+                $(".cancel-order").click(function () {
+                    let button = $(this); // Get the clicked button
+                    let orderId = $(this).attr("data-id");
+                    $.ajax({
+                        type: "POST",
+                        url: "cancel-order",
+                        data: {
+                            orderId: orderId
+                        },
+                        success: function (response) {
+                            alert(response);
+                            // Change the button text to "Canceled"
+                            button.text("Canceled").removeClass("btn-danger").addClass("btn-secondary");
+                            button.prop("disabled", true);
+                            
+                        },
+                        error: function (xhr) {
+                            alert(xhr.responseText);
+                        }
+                    });
+                });
+            });
+        
+                
+    </script>
+    
+
+</body>
+</html>
