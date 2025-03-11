@@ -1,5 +1,5 @@
 # E-Commerce Project (Spring Boot)
-Ecommerce Store is a online shopping project built with Java Spring Boot MVC and Thymeleaf. This web application provides a good user experience through a frontend developed with HTML, CSS, JavaScript, and AJAX.
+MarketMatrix is a online shopping project built with Java Spring Boot MVC and Thymeleaf. This web application provides a good user experience through a frontend developed with HTML, CSS, JavaScript, and AJAX.
 
 The backend used Spring Boot for clean, structured code with a service layer, Spring Data JPA for efficient database operations using MySQL, and Spring Security to protect user data with authentication and role-based authorization. This project is packaged as a JAR file for easy deployment on any web server such as aws.
 
