@@ -24,5 +24,3 @@ The backend used Spring Boot for clean, structured code with a service layer, Sp
 
 ## Installation
 ** Refer Project installation file **
-
-Live Demo deployed on aws: http://marketmatrix.eu-north-1.elasticbeanstalk.com/
