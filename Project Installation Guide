@@ -38,5 +38,3 @@ for Admin login -> copy user data from mysql database and paste it as new row, a
 It has two side User and Admin
 Admin has only two functionality right now -> add category and add product , its in developing
 
-To see live project deployed on aws: http://marketmatrix.eu-north-1.elasticbeanstalk.com/signin (reload 2-3 times if not working)
-
